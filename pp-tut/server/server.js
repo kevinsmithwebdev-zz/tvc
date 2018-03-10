@@ -9,6 +9,7 @@ const expressSession = require('express-session')({
   resave: false,
   saveUninitialized: true
 })
+var cors = require('cors')
 const path = require('path')
 
 const morgan = require('morgan')
@@ -17,6 +18,7 @@ const User = require('./models/user')
 
 // passport
 const LocalStrategy = require('passport-local').Strategy
+
 const passport = require('passport')
 
 // mongoose
@@ -42,10 +44,12 @@ mongoose.connect(process.env.MONGODB)
 const app = express()
 app.use(morgan('dev'))
 
+app.use(cors())
+// app.options('*', cors())
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser())
+app.use(cookieParser(process.env.SESSION_SECRET))
 app.use(expressSession)
 app.use(passport.initialize())
 app.use(passport.session())
@@ -54,8 +58,24 @@ app.use(passport.session())
 app.use('/auth', authRoute)
 app.use('/', indexRoute)
 
+
 // configure passport
-passport.use(new LocalStrategy(User.authenticate()))
+
+
+// passport.use(new LocalStrategy(User.authenticate()))
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      return done(null, user);
+    });
+  }
+));
+
+
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 

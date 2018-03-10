@@ -74,6 +74,7 @@ router.post('/register', async (req, res) => {
       return passport.authenticate('local')(req, res, () => {
         // If logged in, we should have user info to send back
         if (req.user) {
+          req.session.user = req.user
           return res.send(JSON.stringify(req.user));
         }
         // Otherwise return an error
@@ -82,12 +83,6 @@ router.post('/register', async (req, res) => {
     });
   }
 })
-
-
-
-
-
-
 
 
 // GET to /test -- route tester

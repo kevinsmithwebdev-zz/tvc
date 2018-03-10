@@ -28,6 +28,7 @@ npm manifest:
     "dependencies": {
       "body-parser": "^1.18.2",
       "cookie-parser": "^1.4.3",
+      "cors": "^2.8.4",
       "dotenv": "^5.0.1",
       "express": "^4.16.2",
       "express-session": "^1.15.6",
@@ -38,6 +39,9 @@ npm manifest:
     },
     "devDependencies": {
       "morgan": "^1.9.0"
+    },
+    {
+      "proxy": "http://localhost:8080"
     }
   }
 
@@ -121,6 +125,13 @@ Lockfile:
   cookie@0.3.1:
     version "0.3.1"
     resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
+  
+  cors@^2.8.4:
+    version "2.8.4"
+    resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.4.tgz#2bd381f2eb201020105cd50ea59da63090694686"
+    dependencies:
+      object-assign "^4"
+      vary "^1"
   
   crc@3.4.4:
     version "3.4.4"
@@ -366,6 +377,10 @@ Lockfile:
     version "0.6.1"
     resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   
+  object-assign@^4:
+    version "4.1.1"
+    resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+  
   on-finished@~2.3.0:
     version "2.3.0"
     resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
@@ -542,22 +557,15 @@ Lockfile:
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   
-  vary@~1.1.2:
+  vary@^1, vary@~1.1.2:
     version "1.1.2"
     resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
 Trace: 
-  Error: Command failed.
-  Exit signal: SIGTERM
-  Command: sh
-  Arguments: -c nodemon server.js
-  Directory: /home/ksjazzguitar/Programming/tut/server
-  Output:
-  
-      at ProcessTermError.MessageError (/home/ksjazzguitar/.yarn/lib/cli.js:186:110)
-      at new ProcessTermError (/home/ksjazzguitar/.yarn/lib/cli.js:226:113)
-      at ChildProcess.<anonymous> (/home/ksjazzguitar/.yarn/lib/cli.js:30281:17)
-      at emitTwo (events.js:126:13)
-      at ChildProcess.emit (events.js:214:7)
-      at maybeClose (internal/child_process.js:925:16)
-      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
+  SyntaxError: /home/ksjazzguitar/Programming/tvc/pp-tut/server/package.json: Unexpected token { in JSON at position 605
+      at JSON.parse (<anonymous>)
+      at /home/ksjazzguitar/.yarn/lib/cli.js:1036:59
+      at Generator.next (<anonymous>)
+      at step (/home/ksjazzguitar/.yarn/lib/cli.js:98:30)
+      at /home/ksjazzguitar/.yarn/lib/cli.js:109:13
+      at <anonymous>

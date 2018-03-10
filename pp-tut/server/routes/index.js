@@ -1,13 +1,6 @@
 const express = require('express')
 
-// const mongoose = require('mongoose')
-// const passport = require('passport')
-
 const router = express.Router()
-
-// configure mongoose promises
-// mongoose.Promise = global.Promise;
-
 
 // GET to /protected
 router.get('/protected', (req, res) => {

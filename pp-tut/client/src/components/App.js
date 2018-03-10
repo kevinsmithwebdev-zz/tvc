@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import Header from './Header/Header'
 import Home from './Home/Home'
 import Login from './Login/Login'
-import Logout from './Logout/Logout'
+import Data from './Data/Data'
 
-import { AUTH_LOGIN_URL } from '../constants/constants'
+import { AUTH_LOGIN_URL, AUTH_LOGOUT_URL } from '../constants/constants'
 
 import './App.css';
 
@@ -16,26 +16,24 @@ class App extends Component {
     this.state = {
       userData: {}
     }
+    this.handleLogin = this.handleLogin.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
+
+    console.log('App.constructor')
 
   }
 
-  componentWillMount() {
-  }
-
-
-  async handleLogin(userData) {
+  handleLogin(userData) {
     console.log('in handleLogin', userData)
-    await fetch(
-      // where to contact
+    fetch(
       AUTH_LOGIN_URL,
-      // what to send
       {
         method: 'POST',
         body: JSON.stringify(userData),
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        // credentials: 'include'
       },
     )
     .then((response) => {
@@ -46,11 +44,9 @@ class App extends Component {
     })
     .then((json) => {
       if (json) {
-        console.log('returned', json)
-        // loginSuccessAction(json);
-        this.setState({ redirect: true });
+        this.setState({ userData: json });
       } else {
-        console.log('login failed')
+        console.error('login failed')
       }
     })
     .catch((err) => {
@@ -58,9 +54,43 @@ class App extends Component {
     });
   }
 
-  handleLogout() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async handleLogout() {
     console.log('in App.handleLogout...')
     // console.log(userData)
+
+    await fetch(AUTH_LOGOUT_URL)
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return null;
+    })
+    .then((json) => {
+      this.setState({ userData: {} })
+    })
+    .catch((err) => {
+      console.error('error logging in', err)
+    });
+
   }
 
 
@@ -68,11 +98,17 @@ class App extends Component {
     return (
       <Router>
         <div id="App">
-          <Header />
+
+          <Header
+            username={this.state.userData.username}
+            handleLogout={this.handleLogout}
+          />
 
           <Switch>
 
             <Route exact path="/" component={Home} />
+
+            <Route exact path="/data" component={Data} />
 
             <Route
               exact path="/login"
@@ -84,8 +120,8 @@ class App extends Component {
               )}
             />
 
-            <Route exact path="/logout"  handleLogin={this.handleLogout} component={Logout} />
             <Redirect from="*" to="/" />
+
           </Switch>
 
         </div>
