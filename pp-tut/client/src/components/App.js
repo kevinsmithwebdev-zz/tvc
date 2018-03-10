@@ -3,52 +3,65 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 
 import Header from './Header/Header'
 import Home from './Home/Home'
-import Login from './auth/Login/Login'
-import Logout from './auth/Logout/Logout'
+import Login from './Login/Login'
+import Logout from './Logout/Logout'
 
-import { AUTH_CHECK_URL } from '../constants/constants'
+import { AUTH_LOGIN_URL } from '../constants/constants'
 
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      userData: {}
+    }
+
+  }
 
   componentWillMount() {
-    // console.log('App - CWM')
-    // // fetch(AUTH_CHECK_URL)
-    // // .then((resp) => {
-    // //   console.log(resp)
-    // //   console.log(resp.headers.get('Content-Type'))
-    // //   return resp.json()
-    // // })
-    // // .then(function(data) {
-    // //   console.log('JSON return...')
-    // //   console.log(data)
-    // // })
-    // setInterval(() => {
-    //
-    //   fetch(AUTH_CHECK_URL, {
-    //     method: 'GET',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json',
-    //       credentials: "same-origin"
-    //     }
-    //   })
-    //   .then(res => res.json())
-    //   .catch(error => console.error('Error:', error))
-    //   .then(response => {
-    //     console.log('back from AUTH_CHECK_URL')
-    //     console.log(response)
-    //   })
-    // }, 10000)
   }
 
 
-  handleLogin(userData) {
-    console.log('in App.handleLogin...')
-    console.log(userData)
+  async handleLogin(userData) {
+    console.log('in handleLogin', userData)
+    await fetch(
+      // where to contact
+      AUTH_LOGIN_URL,
+      // what to send
+      {
+        method: 'POST',
+        body: JSON.stringify(userData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      },
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return null;
+    })
+    .then((json) => {
+      if (json) {
+        console.log('returned', json)
+        // loginSuccessAction(json);
+        this.setState({ redirect: true });
+      } else {
+        console.log('login failed')
+      }
+    })
+    .catch((err) => {
+      console.error('error logging in', err)
+    });
   }
 
+  handleLogout() {
+    console.log('in App.handleLogout...')
+    // console.log(userData)
+  }
 
 
   render() {
@@ -58,9 +71,20 @@ class App extends Component {
           <Header />
 
           <Switch>
+
             <Route exact path="/" component={Home} />
-            <Route exact path="/auth/login" test={127} component={Login} />
-            <Route exact path="/auth/logout" component={Logout} />
+
+            <Route
+              exact path="/login"
+              render={() => (
+                <Login
+                  test={269}
+                  handleLogin={this.handleLogin}
+                />
+              )}
+            />
+
+            <Route exact path="/logout"  handleLogin={this.handleLogout} component={Logout} />
             <Redirect from="*" to="/" />
           </Switch>
 
