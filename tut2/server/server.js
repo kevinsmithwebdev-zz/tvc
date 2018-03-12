@@ -54,19 +54,9 @@ const User = require('./models/user')
 
 // import routes
 const authRoute = require('./routes/auth')
+const testRoute = require('./routes/test')
 const indexRoute = require('./routes/index')
 
-// start mongoose
-mongoose.connect(process.env.MONGODB)
-.then(
-  () => {
-    console.log("\n*** mongo opened:", process.env.MONGODB, '\n')
-  },
-  err => {
-    console.error("error starting mongo:", process.env.MONGODB)
-    console.error(err)
-  }
-)
 
 const cors = require('cors')
 app.use(cors())
@@ -79,6 +69,7 @@ app.use(passport.session())
 
 // define routes
 app.use('/auth', authRoute)
+app.use('/test', testRoute)
 app.use('/', indexRoute)
 
 
@@ -99,6 +90,8 @@ passport.use(new LocalStrategy(
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
+
+
 // start app
 app.listen(process.env.PORT)
 .on('listening', () => {
@@ -108,3 +101,15 @@ app.listen(process.env.PORT)
   console.error("error opening port:", process.env.PORT)
   console.error(err)
 })
+
+// start mongoose
+mongoose.connect(process.env.MONGODB)
+.then(
+  () => {
+    console.log("\n*** mongo opened:", process.env.MONGODB, '\n')
+  },
+  err => {
+    console.error("error starting mongo:", process.env.MONGODB)
+    console.error(err)
+  }
+)
