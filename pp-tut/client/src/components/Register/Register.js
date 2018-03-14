@@ -2,14 +2,15 @@ import React from 'react'
 
 import '../common/css/auth.css'
 
-class Login extends React.Component {
+class Register extends React.Component {
   constructor() {
     super()
 
     this.state = {
       inputFields: {
         username: '',
-        password: ''
+        password: '',
+        zipCode: ''
       }
     }
 
@@ -21,10 +22,11 @@ class Login extends React.Component {
     this.setState({
       inputFields: {
         username: '',
-        password: ''
+        password: '',
+        zipCode: ''
       }
     })
-    this.props.handleLogin(this.state.inputFields)
+    this.props.handleRegister(this.state.inputFields)
   }
 
   updateInputValue(field, e) {
@@ -38,7 +40,7 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <h1>Login Page</h1>
+        <h1>Registration Page</h1>
         <form className="form" onSubmit={this.handleSubmit}>
           <div className="auth-form-item">
             <label htmlFor="email">Username:</label><br/>
@@ -58,7 +60,16 @@ class Login extends React.Component {
               value={this.state.inputFields.password}
             />
           </div>
-          <button>Login</button>
+          <div className="auth-form-item">
+            <label htmlFor="zipCode">Zip Code:</label><br/>
+            <input
+              name="zipCode"
+              onChange={e => this.updateInputValue('zipCode', e)}
+              type="text"
+              value={this.state.inputFields.zipCode}
+            />
+          </div>
+          <button>Register</button>
           <br/><br/>
         </form>
       </div>
@@ -66,4 +77,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+export default Register

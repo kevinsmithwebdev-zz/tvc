@@ -11,7 +11,7 @@ class Header extends React.Component {
     return (
       <div id="Header">
         <span className="name">
-          <div className="title">Boilerplate Passport-Local Auth</div>
+          <div className="title">TVC Passport Tut</div>
           <div className="welcome">
             {
               isLoggedIn
@@ -25,7 +25,12 @@ class Header extends React.Component {
           <Link to="/">HOME</Link>
           { isLoggedIn
             ? <Link to="/" onClick={this.props.handleLogout} >LOGOUT</Link>
-            : <Link to="/login">LOGIN</Link>
+            : (
+                <React.Fragment>
+                  <Link to="/login">LOGIN</Link>
+                  <Link to="/register">REGISTER</Link>
+                </React.Fragment>
+              )
           }
         </span>
       </div>

@@ -1,94 +1,97 @@
-// const crypto = require('crypto')
 const express = require('express')
-
-const mongoose = require('mongoose')
 const passport = require('passport')
-
-const User = require('../models/user.js')
+const mongoose = require('mongoose')
 
 const router = express.Router()
 
-// configure mongoose promises
-mongoose.Promise = global.Promise;
+const authorization = require('../config/authorization')
 
+const User = require('../models/user.js')
 
-// GET to /checksession
-router.get('/checksession', (req, res) => {
-  if (req.user) {
-    return res.send(JSON.stringify(req.user));
+const sanitizeUser = user => {
+  // wowsers - better way to do this? remove hash and salt instead?
+  return {
+    username: user.username,
+    zipCode: user.zipCode
   }
-  return res.send(JSON.stringify({}));
-});
+}
 
+//*************
 
-// POST to /login
-router.post('/login', async (req, res) => {
-  // look up the user by their email
+router.post("/register", (req, res) => {
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).json({ error: "username and password required"} )
+  }
 
-  const query = User.findOne({ username: req.body.username });
-  const foundUser = await query.exec();
+  let { username, password, zipCode } = req.body
 
-  // if they exist, they'll have a username, so add that to our body
-  // if (foundUser) { req.body.username = foundUser.username; }
+  User.count({ 'username': username }, (err, count) => {
 
-  passport.authenticate('local')(req, res, () => {
-    // If logged in, we should have user info to send back
-    if (req.user) {
-      return res.send(JSON.stringify(req.user));
+    if (err) {
+      console.error('### error checking DB for user count', err)
+      throw err
+    }
+    if (count!==0)
+      return res.status(400).json({ error: "username taken" })
+
+    var newUser = new User({
+      username,
+      hash: password,
+      zipCode
+    })
+
+    User.createUser(newUser, (err, user) => {
+      if (err) {
+        console.error('### error creating user', err)
+        return res.status(500).json({ error: 'error creating user' })
+      }
+      return res.json({ user: sanitizeUser(user) })
+    })
+  })
+})
+
+//*************
+
+router.post("/login", (req, res) => {
+
+  const rejectLogin = () => {
+    res.status(400).json({ error: "username and/or password do/es not match"})
+  }
+
+  if (req.body.username && req.body.password) {
+    var username = req.body.username
+    var password = req.body.password
+  }
+
+  let user = User.getUserByUsername(username, (err, user) => {
+    if (err) {
+      console.error('### error looking up userByUsername', err)
+      res.status(500).json({ error: 'error with DB looking up userName'})
     }
 
-    // Otherwise return an error
-    return res.send(JSON.stringify({ error: 'There was an error logging in' }));
-  });
+    if (!user)
+      return rejectLogin()
 
-  // res.send({data: 'end of the line'})
-});
+    User.comparePassword(password, user.hash, (err, isMatch) => {
+      if (err) throw err;
+      if (!isMatch)
+        return rejectLogin()
 
-// GET to /logout
+      var payload = { id: user._id }
+      var token = authorization.getToken(payload)
+      res.json( { user: sanitizeUser(user), token: token } )
+    })
+  })
+})
+
+//*************
+
 router.get('/logout', (req, res) => {
-  req.logout();
-  return res.send(JSON.stringify(req.user));
-});
-
-
-// POST to /register
-router.post('/register', async (req, res) => {
-  // First, check and make sure the email doesn't already exist
-  const query = User.findOne({ username: req.body.username })
-  const foundUser = await query.exec()
-
-  if (foundUser) {
-    return res.send(JSON.stringify({ error: 'Username already taken' }))
-  }
-  // Create a user object to save, using values from incoming JSON
-  if (!foundUser) {
-    const newUser = new User(req.body);
-
-    // Save, via Passport's "register" method, the user
-    return User.register(newUser, req.body.password, (err) => {
-      // If there's a problem, send back a JSON object with the error
-      if (err) {
-        return res.send(JSON.stringify({ error: err }));
-      }
-      // Otherwise log them in
-      return passport.authenticate('local')(req, res, () => {
-        // If logged in, we should have user info to send back
-        if (req.user) {
-          req.session.user = req.user
-          return res.send(JSON.stringify(req.user));
-        }
-        // Otherwise return an error
-        return res.send(JSON.stringify({ error: 'There was an error registering the user' }));
-      });
-    });
-  }
+  req.logout()
+  return res.send(JSON.stringify(req.user))
 })
 
 
-// GET to /test -- route tester
-router.get('/test', (req, res) => {
-  console.log('GET auth/test')
-  res.send({ greeting: "Hello, from /test!" })
-})
+//*************
 
 module.exports = router

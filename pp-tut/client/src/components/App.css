@@ -1,6 +1,11 @@
 body {
-  background-color: #f7fff7;
-
+  margin: 0 auto;
+  font-family: sans-serif;
+  max-width: 800px;
 }
-#App {
+
+#App .content {
+  background-color: antiquewhite;
+  padding: 5px;
+  height: 500px;
 }
