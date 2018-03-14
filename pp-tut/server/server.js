@@ -2,7 +2,7 @@
 process.env.JWT_SECRET="jwtsecret"
 process.env.MONGODB='mongodb://localhost/tvcpptut'
 process.env.PORT=8080
-process.env.JWT_EXP = 10 * 60 // JWT expiration time in seconds
+process.env.JWT_EXP = 100 * 60 // JWT expiration time in seconds
 
 // *************
 
