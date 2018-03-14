@@ -40,9 +40,18 @@ let runningExpress = false
 let runningMongo = false
 
 const confirmRunning = () => {
+  const baseUrl = "http://localhost:" + process.env.PORT
   if (runningExpress && runningMongo) {
-    console.log("\nServer and DB now running. You can confirm it by checking url:")
-    console.log("http://localhost:" + process.env.PORT + "/test")
+    console.log("\n*** Server and DB now running. You can confirm it by checking url:\n")
+    console.log(baseUrl+ "/test")
+    console.log('\nOther available routes:\n')
+    console.log(baseUrl+ "/auth/register")
+    console.log(baseUrl+ "/auth/login")
+    console.log(baseUrl+ "/auth/logout")
+    console.log("")
+    console.log(baseUrl+ "/data/unprotected")
+    console.log(baseUrl+ "/data/protected")
+    console.log("")
   }
 }
 
@@ -54,7 +63,7 @@ app.get("/test", (req, res) => {
 // start app
 app.listen(process.env.PORT)
 .on('listening', () => {
-  console.log("\nserver listening on port:", process.env.PORT, "\n")
+  console.log("server listening on port:", process.env.PORT)
   runningExpress = true
   confirmRunning()
 })
@@ -67,7 +76,7 @@ app.listen(process.env.PORT)
 mongoose.connect(process.env.MONGODB)
 .then(
   () => {
-    console.log("\nmongo opened:", process.env.MONGODB, '\n')
+    console.log("mongo opened:", process.env.MONGODB)
     runningMongo = true
     confirmRunning()
   },

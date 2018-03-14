@@ -91,7 +91,6 @@ router.get('/logout', (req, res) => {
   return res.send(JSON.stringify(req.user))
 })
 
-
 //*************
 
 module.exports = router
