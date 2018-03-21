@@ -11,9 +11,9 @@ class Register extends React.Component {
         username: '',
         password: '',
         zipCode: ''
-      }
+      },
+      isPasswordHide: false
     }
-
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
@@ -37,6 +37,12 @@ class Register extends React.Component {
     })
   }
 
+  updatePasswordHide(e) {
+    this.setState({
+      isPasswordHide: !this.state.isPasswordHide
+    })
+  }
+
   render() {
     return (
       <div>
@@ -56,9 +62,16 @@ class Register extends React.Component {
             <input
               name="password"
               onChange={e => this.updateInputValue('password', e)}
-              type="text"
+              type={this.state.isPasswordHide?"password":"text"}
               value={this.state.inputFields.password}
             />
+            <input
+              checked={this.state.isPasswordHide}
+              id="checkBox"
+              onChange={e => this.updatePasswordHide(e)}
+              type="checkbox"
+            />
+            <label htmlFor="checkBox">hide</label>
           </div>
           <div className="auth-form-item">
             <label htmlFor="zipCode">Zip Code:</label><br/>

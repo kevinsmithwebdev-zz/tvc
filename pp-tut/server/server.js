@@ -1,8 +1,9 @@
 // should be saved in a .env file to protect
 process.env.JWT_SECRET="jwtsecret"
-process.env.MONGODB='mongodb://localhost/tvcpptut'
+process.env.MONGODB='mongodb://localhost/tvcpptut-jwt'
 process.env.PORT=8080
-process.env.JWT_EXP = 100 * 60 // JWT expiration time in seconds
+// process.env.JWT_EXP = (7*24*60*60) // JWT expiration time in seconds
+process.env.JWT_EXP = 900 // JWT expiration time in seconds
 
 // *************
 
@@ -43,14 +44,15 @@ const confirmRunning = () => {
   const baseUrl = "http://localhost:" + process.env.PORT
   if (runningExpress && runningMongo) {
     console.log("\n*** Server and DB now running. You can confirm it by checking url:\n")
-    console.log(baseUrl+ "/test")
+    console.log(baseUrl + "/test")
     console.log('\nOther available routes:\n')
-    console.log(baseUrl+ "/auth/register")
-    console.log(baseUrl+ "/auth/login")
-    console.log(baseUrl+ "/auth/logout")
+    console.log(baseUrl + "/auth/register")
+    console.log(baseUrl + "/auth/login")
+    // console.log(baseUrl + "/auth/logout") // not needed with JWT?
+    console.log(baseUrl + "/auth/checkjwt")
     console.log("")
-    console.log(baseUrl+ "/data/unprotected")
-    console.log(baseUrl+ "/data/protected")
+    console.log(baseUrl + "/data/unprotected")
+    console.log(baseUrl + "/data/protected")
     console.log("")
   }
 }

@@ -28,25 +28,22 @@ class Data extends React.Component {
       console.error('error fetching unprotected data', err)
     })
 
-    const token = 'JWT ' + this.props.token
-
     fetch(DATA_PROTECTED_URL, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: token
+        Authorization: this.props.token
       }
     })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.status === 200)
         return response.json()
-      }
       return null
     })
     .then((json) => {
       if (json)
         this.setState({ dataProtected: json })
       else
-        this.setState({ dataProtected: { data: "Denied! No response from secret route!" } })
+        this.setState({ dataProtected: { data: "No data returned from protected route." } })
     })
     .catch((err) => {
       console.error('error fetching protected data', err)

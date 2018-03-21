@@ -9,7 +9,8 @@ const authorization = require('../config/authorization')
 const User = require('../models/user.js')
 
 const sanitizeUser = user => {
-  // wowsers - better way to do this? remove hash and salt instead?
+  // wowsers -  better way to do this? remove hash and salt instead?
+  //            or something in mongoose
   return {
     username: user.username,
     zipCode: user.zipCode
@@ -54,9 +55,7 @@ router.post("/register", (req, res) => {
 
 router.post("/login", (req, res) => {
 
-  const rejectLogin = () => {
-    res.status(400).json({ error: "username and/or password do/es not match"})
-  }
+  const rejectLogin = () => res.status(400).json({ error: "username and/or password do/es not match"})
 
   if (req.body.username && req.body.password) {
     var username = req.body.username
@@ -86,9 +85,16 @@ router.post("/login", (req, res) => {
 
 //*************
 
-router.get('/logout', (req, res) => {
-  req.logout()
-  return res.send(JSON.stringify(req.user))
+// wowsers - is this necessary with JWT?
+// router.get('/logout', (req, res) => {
+//   // req.logout()
+//   return res.send(JSON.stringify(req.user))
+// })
+
+//*************
+
+router.get('/checkjwt', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.status(200).json({ user: sanitizeUser(req.user) })
 })
 
 //*************

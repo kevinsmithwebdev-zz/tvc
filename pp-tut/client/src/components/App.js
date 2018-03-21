@@ -7,7 +7,8 @@ import Login from './Login/Login'
 import Register from './Register/Register'
 import Data from './Data/Data'
 
-import { AUTH_REGISTER_URL, AUTH_LOGIN_URL, AUTH_LOGOUT_URL } from '../constants/routes'
+import { AUTH_REGISTER_URL, AUTH_LOGIN_URL, AUTH_CHECKJWT_URL } from '../constants/routes'
+import { LOCAL_STORAGE_KEY } from '../constants/auth'
 
 import './App.css'
 
@@ -21,6 +22,36 @@ class App extends Component {
     this.handleRegister = this.handleRegister.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
+  }
+
+  componentDidMount() {
+    let token = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (token) {
+      this.setState({ token })
+      fetch(AUTH_CHECKJWT_URL, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        }
+        return null
+      })
+      .then((json) => {
+        if (json && json.user)
+          this.setState({ userData: json.user })
+        else
+          localStorage.removeItem(LOCAL_STORAGE_KEY)
+      })
+      .catch((err) => {
+        console.error('error logging in', err)
+      })
+    } else {
+      // this.setState({ userData: {} }) // clear userData if no token?
+    }
   }
 
   handleRegister(userData) {
@@ -41,11 +72,11 @@ class App extends Component {
       return null
     })
     .then((json) => {
-      // if (json.user) {
-      //   this.setState({ userData: json.user, token: json.token })
-      // } else {
-      //   console.error('login failed')
-      // }
+      if (json.user) {
+        this.setState({ userData: json.user, token: 'JWT ' + json.token })
+      } else {
+        console.error('login failed')
+      }
     })
     .catch((err) => {
       console.error('error logging in', err)
@@ -71,7 +102,8 @@ class App extends Component {
     })
     .then((json) => {
       if (json.user) {
-        this.setState({ userData: json.user, token: json.token })
+        this.setState({ userData: json.user, token: "JWT " + json.token })
+        localStorage.setItem(LOCAL_STORAGE_KEY, "JWT " + json.token)
       } else {
         console.error('login failed')
       }
@@ -81,25 +113,10 @@ class App extends Component {
     })
   }
 
-
-  async handleLogout() {
-
-    await fetch(AUTH_LOGOUT_URL)
-    .then((response) => {
-      if (response.status === 200) {
-        return response.json()
-      }
-      return null
-    })
-    .then((json) => {
-      this.setState({ userData: {}, token: '' })
-    })
-    .catch((err) => {
-      console.error('error logging in', err)
-    })
-
+  handleLogout() {
+    this.setState({ userData: {}, token: '' })
+    localStorage.removeItem(LOCAL_STORAGE_KEY)
   }
-
 
   render() {
     return (
