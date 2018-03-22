@@ -1,5 +1,6 @@
 const passport = require("passport")
 const passportJWT = require("passport-jwt")
+const jwt = require('jsonwebtoken')
 
 const User = require('../models/user.js')
 
@@ -8,7 +9,7 @@ const JwtStrategy = passportJWT.Strategy
 
 const jwtOptions = {}
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader()
-jwtOptions.secretOrKey = 'tasmanianDevil'
+jwtOptions.secretOrKey = process.env.JWT_SECRET
 
 const strategy = new JwtStrategy(jwtOptions, (jwtPayload, next) => {
   User.getUserById(jwtPayload.id, (err, user) => {
@@ -22,7 +23,6 @@ const strategy = new JwtStrategy(jwtOptions, (jwtPayload, next) => {
   })
 })
 
-const jwt = require('jsonwebtoken')
 
 passport.use(strategy)
 

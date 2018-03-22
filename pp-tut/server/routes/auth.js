@@ -86,10 +86,10 @@ router.post("/login", (req, res) => {
 //*************
 
 // wowsers - is this necessary with JWT?
-// router.get('/logout', (req, res) => {
-//   // req.logout()
-//   return res.send(JSON.stringify(req.user))
-// })
+router.get('/logout', (req, res) => {
+  req.logout()
+  res.status(200).send({ msg: "logged out" })
+})
 
 //*************
 
