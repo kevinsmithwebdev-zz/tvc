@@ -4,18 +4,9 @@ const mongoose = require('mongoose')
 
 const router = express.Router()
 
-const authorization = require('../config/authorization')
+const authentication = require('../config/authentication')
 
 const User = require('../models/user.js')
-
-const sanitizeUser = user => {
-  // wowsers -  better way to do this? remove hash and salt instead?
-  //            or something in mongoose
-  return {
-    username: user.username,
-    zipCode: user.zipCode
-  }
-}
 
 //*************
 
@@ -26,7 +17,7 @@ router.post("/register", (req, res) => {
 
   let { username, password, zipCode } = req.body
 
-  User.count({ 'username': username }, (err, count) => {
+  User.count({ username }, (err, count) => {
 
     if (err) {
       console.error('### error checking DB for user count', err)
@@ -46,7 +37,7 @@ router.post("/register", (req, res) => {
         console.error('### error creating user', err)
         return res.status(500).json({ error: 'error creating user' })
       }
-      return res.json({ user: sanitizeUser(user) })
+      return res.json({ user })
     })
   })
 })
@@ -57,10 +48,10 @@ router.post("/login", (req, res) => {
 
   const rejectLogin = () => res.status(400).json({ error: "username and/or password do/es not match"})
 
-  if (req.body.username && req.body.password) {
-    var username = req.body.username
-    var password = req.body.password
-  }
+  let { username, password } = req.body
+
+  if (!username || !password)
+    return rejectLogin()
 
   let user = User.getUserByUsername(username, (err, user) => {
     if (err) {
@@ -72,20 +63,19 @@ router.post("/login", (req, res) => {
       return rejectLogin()
 
     User.comparePassword(password, user.hash, (err, isMatch) => {
-      if (err) throw err;
+      if (err) throw err
       if (!isMatch)
         return rejectLogin()
 
       var payload = { id: user._id }
-      var token = authorization.getToken(payload)
-      res.json( { user: sanitizeUser(user), token: token } )
+      var token = authentication.getToken(payload)
+      res.json( { user, token } )
     })
   })
 })
 
 //*************
 
-// wowsers - is this necessary with JWT?
 router.get('/logout', (req, res) => {
   req.logout()
   res.status(200).send({ msg: "logged out" })
@@ -94,7 +84,8 @@ router.get('/logout', (req, res) => {
 //*************
 
 router.get('/checkjwt', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.status(200).json({ user: sanitizeUser(req.user) })
+  console.log('checkjwt req.user', req.user)
+  res.status(200).json({ user: req.user })
 })
 
 //*************

@@ -1,4 +1,3 @@
-
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -13,6 +12,8 @@ const dataRoute = require('./routes/data')
 // *************
 
 const app = express()
+
+// middleware
 
 app.use(cors())
 app.use(morgan('tiny'))
@@ -34,7 +35,7 @@ let runningExpress = false
 let runningMongo = false
 
 const confirmRunning = () => {
-  if (runningExpress && runningMongo) {
+  if (runningExpress && runningMongo && process.env.MODE === 'DEV') {
     console.log("\n*** Server and DB now running. You can confirm it by checking url:\n")
     console.log(process.env.SERVER_URL + ":" + process.env.PORT + "/")
     console.log("")
@@ -66,6 +67,7 @@ app.listen(process.env.PORT)
 .on('listening', () => {
   console.log("server listening on port:", process.env.PORT)
   runningExpress = true
+  confirmRunning()
 })
 .on('error', (err) => {
   console.error("### error opening port:", process.env.PORT)
@@ -78,6 +80,7 @@ mongoose.connect(process.env.MONGODB)
   () => {
     console.log("mongo opened:", process.env.MONGODB)
     runningMongo = true
+    confirmRunning()
   },
   err => {
     console.error("### error starting mongo:", process.env.MONGODB)

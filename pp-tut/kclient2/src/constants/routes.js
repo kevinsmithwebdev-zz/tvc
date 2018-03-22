@@ -1,5 +1,5 @@
-const SERVER_URL = "https://kswd-tvc-pptut.herokuapp.com"
-// const SERVER_URL = "http://localhost:8080"
+// const SERVER_URL = "https://kswd-tvc-pptut.herokuapp.com"
+const SERVER_URL = "http://localhost:8080"
 
 export const AUTH_REGISTER_URL    = SERVER_URL + '/auth/register'
 export const AUTH_LOGIN_URL       = SERVER_URL + '/auth/login'

@@ -1,5 +1,4 @@
 const express = require('express')
-const authorization = require('../config/authorization')
 const passport = require("passport")
 
 const router = express.Router()

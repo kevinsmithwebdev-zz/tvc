@@ -7,14 +7,15 @@ const User = require('../models/user.js')
 const ExtractJwt = passportJWT.ExtractJwt
 const JwtStrategy = passportJWT.Strategy
 
-const jwtOptions = {}
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader()
-jwtOptions.secretOrKey = process.env.JWT_SECRET
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeader(),
+  secretOrKey: process.env.JWT_SECRET
+}
 
 const strategy = new JwtStrategy(jwtOptions, (jwtPayload, next) => {
   User.getUserById(jwtPayload.id, (err, user) => {
     if (err)
-      next(null, false)
+      next(err, false)
     if (user) {
       next(null, user)
     } else {
@@ -22,7 +23,6 @@ const strategy = new JwtStrategy(jwtOptions, (jwtPayload, next) => {
     }
   })
 })
-
 
 passport.use(strategy)
 

@@ -18,8 +18,14 @@ var UserSchema = mongoose.Schema({
   }
 })
 
-var User = module.exports = mongoose.model('User', UserSchema)
+UserSchema.methods.toJSON = function() {
+  let obj = this.toObject()
+  delete obj.hash
+  delete obj.salt
+  return obj
+}
 
+var User = module.exports = mongoose.model('User', UserSchema)
 
 module.exports.createUser = (newUser, callback) => {
   bcrypt.genSalt(10, function(err, salt) {
@@ -34,8 +40,8 @@ module.exports.createUser = (newUser, callback) => {
 module.exports.changePassword = (data, callback) => {
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(data.newPassword, salt, function(err, hash) {
-      var query = { username: data.username };
-      User.findOneAndUpdate(query, { password: hash }, {new: true}, callback);
+      var query = { username: data.username }
+      User.findOneAndUpdate(query, { password: hash }, {new: true}, callback)
     })
   })
 }
@@ -50,10 +56,8 @@ module.exports.getUserById = (id, callback) => {
 }
 
 module.exports.comparePassword = (candidatePassword, hash, callback) => {
-  if (!hash)
-    hash = ""
   bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
-    if (err) throw err;
+    if (err) throw err
     callback(null, isMatch)
   })
 }
