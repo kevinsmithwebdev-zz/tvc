@@ -22,13 +22,16 @@ server listening on port: 8080
 mongo opened: mongodb://localhost/tvcpptut
 
 *** Server and DB now running. You can confirm it by checking url:
+```
+If you put the URL in the browser (e.g., *http://localhost:8080*), it should tell you that the server and database are running and give you a list of routes.
 
-http://localhost:8080/test
-
-Other available routes:
+Available routes should be:
+```
+http://localhost:8080
 
 http://localhost:8080/auth/register
 http://localhost:8080/auth/login
+http://localhost:8080/auth/logout
 http://localhost:8080/auth/checkjwt
 
 http://localhost:8080/data/unprotected
