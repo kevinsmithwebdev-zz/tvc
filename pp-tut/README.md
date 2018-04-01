@@ -5,3 +5,5 @@ This is a boilerplate I created for myself. It is going to be used at the TVC me
 The goal was to have the client completely separate from the server. This created difficulties with using session/cookies to persist the login so I went with JSON web token solution.
 
 Please see the README.md files in the appropriate folder for the server and client information.
+
+The current client is at version is in the */kclient2/* folder.
