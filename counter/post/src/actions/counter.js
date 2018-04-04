@@ -11,6 +11,6 @@ export const resetCounter = () => {
 }
 
 export const setCounter = (num) => {
-  return { type: 'SET_COUNTER', num }
+  return { type: 'SET_COUNTER', payload: num }
 }
  
