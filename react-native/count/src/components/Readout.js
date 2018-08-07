@@ -1,10 +1,18 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-const Readout = () => {
+const Readout = ({ counter }) => {
   return (
-    <Text>Hello, from Readout!</Text>
+    <Text style={styles.readout}>Counter: {counter}</Text>
   )
 }
 
 export default Readout
+
+const styles = StyleSheet.create({
+  readout: {
+    marginVertical: 20,
+    fontSize: 36,
+    textAlign: 'center',
+  }
+})

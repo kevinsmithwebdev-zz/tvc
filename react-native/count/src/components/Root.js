@@ -5,7 +5,6 @@ import Readout from './Readout'
 import Controls from './Controls'
 
 class Root extends React.Component {
-
   state = { counter: 0 }
 
   changeCounter = factor => {
@@ -14,11 +13,15 @@ class Root extends React.Component {
     }
   }
 
+
   render() {
     return (
       <View>
-        <Readout />
-        <Controls />
+        <Readout counter={this.state.counter} />
+        <Controls
+          changeCounter={this.changeCounter}
+          isZero={this.state.counter === 0} 
+        />
       </View>
     )
   }
