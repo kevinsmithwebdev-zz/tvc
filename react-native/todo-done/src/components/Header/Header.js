@@ -27,9 +27,7 @@ class Header extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text>Hello, from Header!</Text>
-
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.addTouch}
           onPress={this.handleAdd}
         >
@@ -45,7 +43,7 @@ class Header extends React.Component {
           value={this.state.input}
           style={styles.input}
           underlineColorAndroid='transparent'
-        /> */}
+        />
 
       </View>
     )

@@ -18,7 +18,7 @@ class Todos extends React.Component {
       return (
         <View style={styles.todoContainer}>
 
-          {/* <TouchableOpacity
+          <TouchableOpacity
             onPress={() => toggleTodoCompleted(id)}
             style={styles.todoTouch}
           >
@@ -30,18 +30,17 @@ class Todos extends React.Component {
             style={styles.deleteTouch}
           >
             <Text style={styles.deleteText}>X</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
         </View>
       )
     }
 
     return (
-      <Text>Hello, from Todos</Text>
-      // <ScrollView style={styles.container}>
-      //   <Text style={styles.title}>Todos:</Text>
-      //   { todos.map((t, idx) => <Todo key={idx} todo={t} id={idx}/> )}
-      // </ScrollView>
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>Todos:</Text>
+        { todos.map((t, idx) => <Todo key={idx} todo={t} id={idx}/> )}
+      </ScrollView>
     )
   }
 }

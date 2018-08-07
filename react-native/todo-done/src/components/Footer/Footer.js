@@ -38,8 +38,7 @@ class Footer extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text>Hello, from Footer!</Text>
-        {/* { filters.map((f, idx) => <Filter key={idx} filter={f} />)} */}
+        { filters.map((f, idx) => <Filter key={idx} filter={f} />)}
       </View>
     )
   }

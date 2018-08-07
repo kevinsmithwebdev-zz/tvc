@@ -1,9 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text } from 'react-native'
 
-const Readout = ({ counter }) => {
+const Readout = () => {
   return (
-    <Text>Counter: {counter}</Text>
+    <Text>Hello, from Readout!</Text>
   )
 }
 
